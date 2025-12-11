@@ -21,3 +21,21 @@ int main() {
     cout << "Read " << StudentAnswers.size() << " bytes from StudentAnswers.txt\n";
     return 0;
 }
+
+int CorrectAnswers(const string& StudentAnswers, const string& AnswerKey) {
+    int correctCount = 0;
+    size_t length = min(StudentAnswers.size(), AnswerKey.size());
+    for (size_t i = 0; i < length; ++i) {
+        if (StudentAnswers[i] == AnswerKey[i]) {
+            ++correctCount;
+        }
+    }
+    return correctCount;
+}
+
+void GradeExam(const string& StudentAnswers, const string& AnswerKey) {
+    int correct = CorrectAnswers(StudentAnswers, AnswerKey);
+    cout << "Number of correct answers: " << correct << "\n";
+    cout << "Score: " << (static_cast<double>(correct) / AnswerKey.size()) * 100 << "%\n";
+}
+
