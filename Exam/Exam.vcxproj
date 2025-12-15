@@ -127,7 +127,10 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="CorrectAnswers.txt" />
-    <Text Include="StudentAnswers.txt" />
+    <Text Include="StudentAnswers.txt">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </Text>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
