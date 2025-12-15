@@ -1,4 +1,4 @@
-// file: grader.cpp
+
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -35,8 +35,8 @@ vector<char> ReadAnswers(const string& path) {
 
 int main() {
     try {
-        const string correctPath = "CorrectAnswers.txt";
-        const string studentPath = "StudentAnswers.txt";
+        const string correctPath = "C:/Users/elija/source/repos/Exam/Exam/CorrectAnswers.txt";
+        const string studentPath = "C:/Users/elija/source/repos/Exam/Exam/StudentAnswers.txt";
 
         vector<char> correct = ReadAnswers(correctPath);
         vector<char> student = ReadAnswers(studentPath);
@@ -49,14 +49,17 @@ int main() {
                 ++score;
             }
         }
-
+		int grade = static_cast<int>((static_cast<double>(score) / correct.size()) * 100);
+		
         cout << "Correct Answers: " << score << endl;
         cout << "Total Answers: " << student.size() << endl;
+        cout << "Grade: " << grade << "%" << endl;
     }
     catch (const exception& e) {
         cerr << e.what() << endl;
         return 1;
     }
+
 
     return 0;
 }
