@@ -4,15 +4,17 @@
 #include <vector>
 #include <cctype>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
 char NormalizeToken(const string& token) {
     for (unsigned char c : token) {
-        if (!isspace(c)) return static_cast<char>(toupper(c));
+        if (isalpha(c)) return static_cast<char>(toupper(c));
     }
     return '\0';
 }
+
 
 vector<char> ReadAnswers(const string& path) {
     ifstream file(path);
@@ -20,23 +22,29 @@ vector<char> ReadAnswers(const string& path) {
         throw runtime_error("Failed to open file: " + path);
     }
 
+    cout << "\nREADING FILE:\n" << path << "\n";
+
     vector<char> answers;
     string token;
 
+    int i = 0;
     while (file >> token) {
         char normalized = NormalizeToken(token);
+        cout << i++ << ": [" << token << "] -> " << normalized << endl;
         if (normalized != '\0') {
             answers.push_back(normalized);
         }
     }
 
+    cout << "TOTAL READ: " << answers.size() << "\n";
     return answers;
 }
 
+
 int main() {
     try {
-        const string correctPath = "C:/Users/elija/source/repos/Exam/Exam/CorrectAnswers.txt";
-        const string studentPath = "C:/Users/elija/source/repos/Exam/Exam/StudentAnswers.txt";
+        const string correctPath = "CorrectAnswers.txt";
+        const string studentPath = "StudentAnswers.txt";
 
         vector<char> correct = ReadAnswers(correctPath);
         vector<char> student = ReadAnswers(studentPath);
