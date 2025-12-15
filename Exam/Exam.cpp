@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// Normalizes a token to its first alphabetic character in uppercase
+
 char NormalizeToken(const string& token) {
     for (unsigned char c : token) {
         if (isalpha(c)) return static_cast<char>(toupper(c));
@@ -15,6 +17,7 @@ char NormalizeToken(const string& token) {
     return '\0';
 }
 
+// Reads answers from a file and normalizes them
 
 vector<char> ReadAnswers(const string& path) {
     ifstream file(path);
@@ -40,6 +43,7 @@ vector<char> ReadAnswers(const string& path) {
     return answers;
 }
 
+// Main function to compare answers and calculate score
 
 int main() {
     try {
@@ -57,17 +61,21 @@ int main() {
                 ++score;
             }
         }
+		// Calculate grade as a percentage
 		int grade = static_cast<int>((static_cast<double>(score) / correct.size()) * 100);
 		
         cout << "Correct Answers: " << score << endl;
         cout << "Total Answers: " << student.size() << endl;
         cout << "Grade: " << grade << "%" << endl;
     }
+
+	// Handle file reading errors
     catch (const exception& e) {
         cerr << e.what() << endl;
         return 1;
     }
 
+	
 
     return 0;
 }
