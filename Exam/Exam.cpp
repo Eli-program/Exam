@@ -1,71 +1,62 @@
+// file: grader.cpp
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
-#include <algorithm>
 #include <cctype>
+#include <string>
 
 using namespace std;
 
-
-
-
-int CorrectAnswers(const string& correctPath, const string& studentPath) {
-    ifstream correctFile(correctPath);
-    ifstream studentFile(studentPath);
-    if (!correctFile.is_open() || !studentFile.is_open()) {
-        cerr << "Error opening files: " << correctPath << " or " << studentPath << endl;
-        return -1;
+char NormalizeToken(const string& token) {
+    for (unsigned char c : token) {
+        if (!isspace(c)) return static_cast<char>(toupper(c));
     }
-
-    auto normalize = [](const string& token) -> char {
-        for (unsigned char c : token) {
-            if (!isspace(c)) return static_cast<char>(toupper(c));
-        }
-        return '\0';
-    };
-
-    int score = 0;
-    string correctToken, studentToken;
-    // Read tokens (whitespace-delimited) from both files in lockstep.
-    while (correctFile >> correctToken && studentFile >> studentToken) {
-        char c = normalize(correctToken);
-        char s = normalize(studentToken);
-        if (c != '\0' && c == s) ++score;
-    }
-
-    return score;
+    return '\0';
 }
 
-int StudentAnswers(const string& studentPath) {
-    ifstream studentFile(studentPath);
-    if (!studentFile.is_open()) {
-        cerr << "Error opening file: " << studentPath << endl;
-        return -1;
+vector<char> ReadAnswers(const string& path) {
+    ifstream file(path);
+    if (!file.is_open()) {
+        throw runtime_error("Failed to open file: " + path);
     }
-    auto normalize = [](const string& token) -> char {
-        for (unsigned char c : token) {
-            if (!isspace(c)) return static_cast<char>(toupper(c));
+
+    vector<char> answers;
+    string token;
+
+    while (file >> token) {
+        char normalized = NormalizeToken(token);
+        if (normalized != '\0') {
+            answers.push_back(normalized);
         }
-        return '\0';
-    };
-    int count = 0;
-    string studentToken;
-    while (studentFile >> studentToken) {
-        char s = normalize(studentToken);
-        if (s != '\0') ++count;
     }
-    return count;
+
+    return answers;
 }
 
 int main() {
-    string correctPath = "CorrectAnswers.txt";
-    string studentPath = "StudentAnswers.txt";
-    int correctCount = CorrectAnswers(correctPath, studentPath);
-    if (correctCount == -1) return 1;
-    int totalCount = StudentAnswers(studentPath);
-    if (totalCount == -1) return 1;
-    cout << "Correct Answers: " << correctCount << endl;
-    cout << "Total Answers: " << totalCount << endl;
+    try {
+        const string correctPath = "CorrectAnswers.txt";
+        const string studentPath = "StudentAnswers.txt";
+
+        vector<char> correct = ReadAnswers(correctPath);
+        vector<char> student = ReadAnswers(studentPath);
+
+        int score = 0;
+        int compareCount = min(correct.size(), student.size());
+
+        for (int i = 0; i < compareCount; ++i) {
+            if (correct[i] == student[i]) {
+                ++score;
+            }
+        }
+
+        cout << "Correct Answers: " << score << endl;
+        cout << "Total Answers: " << student.size() << endl;
+    }
+    catch (const exception& e) {
+        cerr << e.what() << endl;
+        return 1;
+    }
+
     return 0;
 }
